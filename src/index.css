@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Alex+Brush&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Helvetica Neue", Arial, "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: Georgia, "Playfair Display", serif;
+  --font-script: "Alex Brush", cursive;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Natural Tones Native Colors */
+  --color-brand-olive: #5A5A40;
+  --color-brand-terracotta: #A65D46;
+  --color-brand-sand: #E6DFD6;
+  --color-brand-ink: #2D2926;
+  --color-brand-bg: #F7F3F0;
+  --color-brand-white: #FFFFFF;
+
+  /* Legacy alias mappings for backward compatibility inside App.tsx components */
+  --color-brand-navy: #2D2926;
+  --color-brand-navy-light: #5A5A40;
+  --color-brand-gold: #5A5A40;
+  --color-brand-gold-dark: #A65D46;
+  --color-brand-gold-light: #E6DFD6;
+  --color-brand-beige: #E6DFD6;
+  --color-brand-ivory: #F7F3F0;
+  --color-brand-dark: #2D2926;
+}
+
+/* Custom fade-in and smooth interactions */
+@layer base {
+  body {
+    background-color: #F7F3F0;
+    color: #2D2926;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Custom scrollbars inside pages and chat boxes */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #5A5A40;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #A65D46;
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Milene Torres - Contadora MEI",
+  "description": "Portal e atendimento especializado de contabilidade para Microempreendedores Individuais (MEI) com ferramentas e assistente inteligente.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
