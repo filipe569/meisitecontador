@@ -45,7 +45,50 @@ interface MEIService {
   importance: string;
 }
 
+const defaultSiteData = {
+  headerName: "Milene Torres",
+  headerSubtitle: "Contadora Especialista em MEI",
+  heroBadge: "Atendimento 100% Personalizado e Humanizado",
+  heroHeadline1: "Contadora Especialista em",
+  heroHeadline2: "MEI",
+  heroHeadline3: "Menos burocracia, mais tempo para você crescer!",
+  heroParagraph: "Você trabalha duro pelo seu negócio. Por que perder noites de sono com a Receita Federal? Garantimos que seu CNPJ fique regularizado, sem multas surpresas, auxiliando na emissão de guias, declaração anual DASN e emissão rápida de notas fiscais.",
+  contactPhone: "71982807972",
+  contactFormatted: "(71) 98280-7972",
+  servicesTitle: "Soluções Especializadas",
+  servicesSubtitle: "Como posso te ajudar no dia a dia?"
+};
+
 export default function App() {
+  const [siteData, setSiteData] = useState(() => {
+    try {
+      const saved = localStorage.getItem("meiSiteData");
+      if (saved) return JSON.parse(saved);
+    } catch (e) {}
+    return defaultSiteData;
+  });
+
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
+  const [adminUser, setAdminUser] = useState("");
+  const [adminPass, setAdminPass] = useState("");
+  const [adminError, setAdminError] = useState("");
+
+  const handleAdminLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (adminUser === "admin" && adminPass === "admin123") {
+      setIsAdminLoggedIn(true);
+      setAdminError("");
+    } else {
+      setAdminError("Usuário ou senha inválidos");
+    }
+  };
+
+  const saveAdminData = (newData: typeof defaultSiteData) => {
+    setSiteData(newData);
+    localStorage.setItem("meiSiteData", JSON.stringify(newData));
+  };
+
   const [selectedService, setSelectedService] = useState<MEIService | null>(null);
   const [activeTab, setActiveTab] = useState<"simulator" | "limit" | "calendar">("simulator");
   const [menuOpen, setMenuOpen] = useState(false);
@@ -86,13 +129,11 @@ export default function App() {
     setIsChatOpen(!isChatOpen);
   };
 
-  const CONTACT_PHONE = "71982807972";
-  const CONTACT_FORMATTED = "(71) 98280-7972";
-  const WHATSAPP_BASE_URL = `https://wa.me/55${CONTACT_PHONE}`;
+  const WHATSAPP_BASE_URL = `https://wa.me/55${siteData.contactPhone.replace(/\D/g, '')}`;
 
   // Helper to open prefilled WhatsApp messages
   const openWhatsApp = (customMessage?: string) => {
-    const textComponent = customMessage ? encodeURIComponent(customMessage) : encodeURIComponent("Olá Milene, acessei seu portal e gostaria de suporte especializado para meu MEI.");
+    const textComponent = customMessage ? encodeURIComponent(customMessage) : encodeURIComponent(`Olá ${siteData.headerName.split(' ')[0]}, acessei seu portal e gostaria de suporte especializado para meu MEI.`);
     window.open(`${WHATSAPP_BASE_URL}?text=${textComponent}`, "_blank");
   };
 
@@ -332,12 +373,12 @@ export default function App() {
             {/* Elegant Branding Logo */}
             <div className="flex flex-col cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
               <span className="font-display text-2xl tracking-widest text-[#13253e] font-semibold flex items-center gap-1.5 uppercase">
-                Milene Torres
+                {siteData.headerName}
               </span>
               <div className="flex items-center gap-1">
                 <span className="h-[1px] w-8 bg-[#c5a68e]"></span>
                 <span className="font-sans text-[9px] tracking-[0.25em] text-[#c5a68e] uppercase font-bold">
-                  Contadora Especialista em MEI
+                  {siteData.headerSubtitle}
                 </span>
                 <span className="h-[1px] w-8 bg-[#c5a68e]"></span>
               </div>
@@ -451,26 +492,24 @@ export default function App() {
               <div className="inline-flex self-center lg:self-start items-center gap-2 bg-[#FAF8F5] border border-[#c5a68e]/50 py-1.5 px-3.5 rounded-full">
                 <Sparkles className="w-4 h-4 text-[#c5a68e]" />
                 <span className="text-[11px] font-bold tracking-wider text-[#13253e] uppercase">
-                  Atendimento 100% Personalizado e Humanizado
+                  {siteData.heroBadge}
                 </span>
               </div>
 
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-[#13253e] font-bold tracking-tight leading-[1.08] flex flex-col">
                 <span className="text-sm font-sans tracking-[0.4em] text-[#c5a68e] font-semibold uppercase mb-1.5">
-                  Contadora Especialista em
+                  {siteData.heroHeadline1}
                 </span>
                 <span className="text-6xl sm:text-7xl lg:text-8xl text-transparent bg-clip-text bg-gradient-to-r from-[#13253e] via-[#1c3659] to-[#c5a68e] tracking-tight py-2">
-                  MEI
+                  {siteData.heroHeadline2}
                 </span>
                 <span className="font-medium text-xl sm:text-2xl mt-4 max-w-xl text-[#c5a68e] italic font-display">
-                  Menos burocracia, mais tempo para você crescer!
+                  {siteData.heroHeadline3}
                 </span>
               </h1>
 
               <p className="text-gray-600 text-base md:text-lg max-w-2xl leading-relaxed font-sans mx-auto lg:mx-0">
-                Você trabalha duro pelo seu negócio. Por que perder noites de sono com a Receita Federal? 
-                Garantimos que seu CNPJ fique regularizado, sem multas surpresas, auxiliando na emissão de guias, 
-                declaração anual DASN e emissão rápida de notas fiscais.
+                {siteData.heroParagraph}
               </p>
 
               {/* Special Floating Badge - Matching Circle of the Flyer */}
@@ -534,7 +573,7 @@ export default function App() {
                   <div className="bg-[#FAF8F5] border border-[#c5a68e]/50 rounded-2xl p-5 mb-5 text-center relative overflow-hidden shadow-md">
                     <div className="absolute -right-4 -top-4 w-12 h-12 bg-[#c5a68e]/10 rounded-full"></div>
                     
-                    <span className="font-script text-3xl text-[#c5a68e] block">Milene Torres</span>
+                    <span className="font-script text-3xl text-[#c5a68e] block">{siteData.headerName}</span>
                     <span className="font-sans text-[11px] font-bold tracking-[0.3em] text-[#13253e] uppercase">
                       CONTADORA
                     </span>
@@ -547,7 +586,7 @@ export default function App() {
                       className="mt-1 w-full bg-[#13253e] hover:bg-[#1c3659] hover:scale-102 hover:shadow-md text-white rounded-xl py-3 px-4 flex items-center justify-center gap-2 transition-all cursor-pointer"
                     >
                       <Phone className="w-4 h-4 text-[#c5a68e]" />
-                      <span className="font-mono text-sm tracking-widest font-semibold">{CONTACT_FORMATTED}</span>
+                      <span className="font-mono text-sm tracking-widest font-semibold">{siteData.contactFormatted}</span>
                     </button>
 
                     <p className="text-[10px] text-gray-500 mt-3 italic">
@@ -1265,7 +1304,7 @@ export default function App() {
 
           <div className="pt-2">
             <span className="font-mono text-xs font-semibold text-[#13253e] tracking-wider">
-              WhatsApp Direto: <span className="text-[#c5a68e] font-bold">{CONTACT_FORMATTED}</span>
+              WhatsApp Direto: <span className="text-[#c5a68e] font-bold">{siteData.contactFormatted}</span>
             </span>
           </div>
 
@@ -1310,7 +1349,9 @@ export default function App() {
 
           <div className="pt-8 flex flex-col md:flex-row justify-between items-center text-[10px] text-stone-500 gap-4">
             <div>
-              <p>© 2026 Milene Torres. Todos os direitos reservados.</p>
+              <p className="cursor-default select-none" onDoubleClick={() => setIsAdminOpen(true)}>
+                © 2026 {siteData.headerName}. Todos os direitos reservados.
+              </p>
               <p className="mt-0.5 text-stone-600 font-mono">CNPJ Contabilidade Credenciada em conformidade.</p>
             </div>
             
@@ -1349,7 +1390,7 @@ export default function App() {
                     </div>
                     <div>
                       <h4 className="font-display font-bold text-sm tracking-wide text-white">
-                        Milene Torres
+                        {siteData.headerName}
                       </h4>
                       <p className="text-[10px] text-gray-300 font-sans tracking-wide flex items-center gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block"></span>
@@ -1570,6 +1611,81 @@ export default function App() {
         </div>
 
       </div>
+
+      {/* Admin Panel Modal */}
+      <AnimatePresence>
+        {isAdminOpen && (
+          <div className="fixed inset-0 bg-black/80 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden shadow-2xl font-sans"
+            >
+              <div className="p-4 bg-[#2D2926] text-white flex justify-between items-center">
+                <h3 className="font-bold">Painel Administrativo</h3>
+                <button onClick={() => { setIsAdminOpen(false); setIsAdminLoggedIn(false); setAdminError(""); }} className="text-white hover:text-gray-300">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {!isAdminLoggedIn ? (
+                <div className="p-8 flex flex-col gap-4">
+                  <p className="text-sm text-gray-600">Acesso restrito. Insira suas credenciais (admin / admin123).</p>
+                  <form onSubmit={handleAdminLogin} className="flex flex-col gap-4">
+                    <input 
+                      type="text" 
+                      placeholder="Usuário" 
+                      value={adminUser} 
+                      onChange={e => setAdminUser(e.target.value)} 
+                      className="border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-[#5A5A40]" 
+                    />
+                    <input 
+                      type="password" 
+                      placeholder="Senha" 
+                      value={adminPass} 
+                      onChange={e => setAdminPass(e.target.value)} 
+                      className="border border-gray-300 p-2.5 rounded-lg focus:outline-none focus:border-[#5A5A40]" 
+                    />
+                    {adminError && <p className="text-red-500 text-xs font-semibold">{adminError}</p>}
+                    <button type="submit" className="bg-[#5A5A40] hover:bg-[#2D2926] text-white p-2.5 rounded-lg font-bold transition-colors">
+                      Entrar
+                    </button>
+                  </form>
+                </div>
+              ) : (
+                <div className="p-6 overflow-y-auto flex flex-col gap-4 flex-1">
+                  <h4 className="font-bold text-lg mb-2 text-[#2D2926]">Editar Informações do Site</h4>
+                  
+                  {Object.entries(siteData).map(([key, value]) => (
+                    <div key={key} className="flex flex-col gap-1.5">
+                      <label className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{key}</label>
+                      <textarea 
+                        value={value} 
+                        onChange={(e) => setSiteData(prev => ({...prev, [key]: e.target.value}))}
+                        className="border border-gray-300 rounded-lg p-2.5 text-sm w-full focus:outline-none focus:border-[#5A5A40] text-gray-800 resize-y"
+                        rows={key === "heroParagraph" ? 4 : 1}
+                      />
+                    </div>
+                  ))}
+                  
+                  <div className="sticky bottom-0 bg-white pt-4 mt-4 border-t border-gray-100 flex gap-2">
+                    <button 
+                      onClick={() => {
+                        saveAdminData(siteData);
+                        setIsAdminOpen(false);
+                      }}
+                      className="bg-[#5A5A40] text-white px-5 py-2.5 rounded-lg font-bold hover:bg-[#2D2926] transition-colors w-full"
+                    >
+                      Salvar Alterações e Fechar
+                    </button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
     </div>
   );
